@@ -1,7 +1,8 @@
 import random
 import math 
 import mmh3 
-from bitarray import bitarray 
+from bitarray import bitarray
+import pickle
 
 '''
 script to make a the bloomFilter class
@@ -11,16 +12,16 @@ class BloomFilter:
     # define data members:
 
     # constructor function:
-    def __init__(self, keyfile, fdr):
+    def __init__(self, keyfile, fdr, outfile):
         
         # initializing data members:
-        self.fdr = fdr
-        keys = self.read_keyfile(keyfile)
+        self.fdr = float(fdr[0])                # accessing arg as string ->float instead of list
+        keys = self.read_keyfile(keyfile[0])    # accessing arg as string instead of list
         self.num_keys = self.count_keys(keys)
 
         # calculate m (number of bits in vector) & k (number of hash functions)
         # based on input:
-        self.M = math.ceil( -1 * self.num_keys * math.log(fdr) / pow(math.log(2), 2) )
+        self.M = math.ceil( -1 * self.num_keys * math.log(self.fdr) / pow(math.log(2), 2) )
         self.k = math.ceil( (self.M / self.num_keys) * math.log(2) )
 
         # making a bitvector of size M:
@@ -46,9 +47,18 @@ class BloomFilter:
                 current_hashval = mmh3.hash(kmer, hsh) % self.M
                 self.bitvector[current_hashval] = True
     
+    # method to test if a kmer is present in the keyfile set
     def query(self, kmer_query):
         for hsh in range(self.k): 
             current_hashval = mmh3.hash(kmer_query, hsh) % self.M
             if self.bitvector[current_hashval] == False: 
                 return False
         return True
+    
+    # method to save BloomFilter object to disk
+    def saveBF(self, outfile):
+        new_out = outfile[0] + ".pickle"
+        print(new_out)
+        with open(new_out, "wb") as filehandle:
+            pickle.dump(self, filehandle)
+            
