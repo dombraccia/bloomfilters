@@ -4,6 +4,7 @@ import numpy as np
 
 '''
 A script to generate a user defined number of kmers of length 100
+TODO: Fix bug when writing kmers to keyfile.txt (extra \n is printed)
 '''
 
 # initializations & user input
@@ -21,7 +22,7 @@ for n in np.arange(num_kmers):
     kmers[n] = uniform_bernoulli_sequence(bases, 100)
 
 # sainity check: all k-mers generated are unique
-print("out of", num_kmers, ":", len(set(kmers), "are unique."))
+#print("out of", num_kmers, ":", len(set(kmers), "are unique."))
 
 # saving list of kmers to text file
 with open('../data/keyfile.txt', 'w') as filehandle:
