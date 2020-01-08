@@ -47,14 +47,15 @@ class BloomFilter:
                 current_hashval = mmh3.hash(kmer, hsh) % self.M
                 self.bitvector[current_hashval] = True
     
-    # method to test if a kmer is present in the keyfile set
-    def query(self, kmer_query):
-        for hsh in range(self.k): 
-            current_hashval = mmh3.hash(kmer_query, hsh) % self.M
-            if self.bitvector[current_hashval] == False: 
-                return False
-        return True
-    
+    # method to test if a set of kmers are present in the keyfile set
+    # OLD WAY - ONLY TESTS SINGLE KMER QUERY:
+    # def query(self, kmer_query):
+    #     for hsh in range(self.k): 
+    #         current_hashval = mmh3.hash(kmer_query, hsh) % self.M
+    #         if self.bitvector[current_hashval] == False: 
+    #             return False
+    #     return True
+
     # method to save BloomFilter object to disk
     def saveBF(self, outfile):
         new_out = outfile[0] + ".pickle"
