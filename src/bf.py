@@ -1,6 +1,8 @@
 import argparse
 from BloomFilter import BloomFilter
 from query import query
+import time
+from statistics import mean
 
 '''
 a place to test the implementation of the BloomFilter
@@ -53,9 +55,10 @@ def main():
         a.saveBF(args.outfile)
     # or query an already built BloomFilter
     elif args.command == "query":
-        # OLD WAY:
-        #print(a.query("TATTCTAACCATGGTTCCACTTGGGGGGGTCAAGTTTATCCGTGAGCCCGAGCATTGGTGTCCTTTGGGTATGCAAGTAGTCGTTGCAGAGAGGAGAATA"))
-        query(args.infile, args.queryfile)
+        # t = time.time()
+        query_times = query(args.infile, args.queryfile)
+        # elapsed = time.time() - t
+        print("average query time:", mean(query_times))
 
     else:
         print("The command you have entered is not 'build' or 'query' -- please try again")

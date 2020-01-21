@@ -22,6 +22,8 @@ class BloomFilter:
         # calculate m (number of bits in vector) & k (number of hash functions)
         # based on input:
         self.M = math.ceil( -1 * self.num_keys * math.log(self.fdr) / pow(math.log(2), 2) )
+        if self.M == 0:
+            self.M = 1
         self.k = math.ceil( (self.M / self.num_keys) * math.log(2) )
 
         # making a bitvector of size M:
