@@ -84,10 +84,6 @@ Domenick J.
  Braccia
 \end_layout
 
-\begin_layout Date
-2 Jan 2020
-\end_layout
-
 \begin_layout Section*
 Task 1 – Basic Bloom Filter
 \end_layout
@@ -96,8 +92,55 @@ Task 1 – Basic Bloom Filter
 Implementation
 \end_layout
 
+\begin_layout Subsubsection*
+Determining 'M' and 'k'
+\end_layout
+
 \begin_layout Standard
-[]
+Given a target False Discovery Rate p, and number of elements inserted n,
+ the size of the bit vector can be found with:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+m=-\frac{n\mathrm{ln\mathit{p}}}{(\mathrm{ln}2)^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And the number of hash functions to use can be found with: 
+\begin_inset Formula 
+\[
+k=\frac{m}{n}\mathrm{ln}2
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I then implemented the functional script `bf.py build` to build bloom filters
+ over $N$ elements from randomly generated k-mers of length 100.
+ Each nucleotide was sampled with uniform probability at each position in
+ the k-mer.
+ To build a bloom filter over 1 000 000 k-mers, that meant that I needed
+ to define a bloom filter of size m = 
+\series bold
+4792529 bits
+\series default
+ with k =
+\series bold
+ ~ 3.32 (rounded to 4) hash functions.
+ 
+\series default
+To query the built bloom filter, I implemented the `bf.py query` function
+ as instructed in the problem description.
 \end_layout
 
 \begin_layout Subsection*
@@ -105,7 +148,17 @@ Most difficult Part
 \end_layout
 
 \begin_layout Standard
-[]
+The part of this assignment that I found to be most difficult was in actually
+ setting up the bloom filter data structure and constructor function.
+ I initially started implementing it in C++, as I thought it would be easier
+ to have control over the bitvector and the data members of the Bloom filter.
+ Unfortunately, this turned out to be more challenging than I had thought;
+ library dependencies, build errors and debugging build errors were a nightmare
+ for me in C++, so, I switched to implementing in Python.
+ At this point in the project, I had already spent 15 or so hours reacquainting
+ myself with Bloom filter basics, so once I switched to Python, I was able
+ to complete the implementation of a constructor, and a query method in
+ about 2.5 hours.
 \end_layout
 
 \begin_layout Subsection*
