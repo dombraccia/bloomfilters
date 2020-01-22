@@ -136,3 +136,22 @@ ggplot(emp_fdr_summary, aes(x = fpr, y = emperical_fpr, group = 1)) +
   geom_point() +
   geom_errorbar(aes(ymin = emperical_fpr - sd, ymax = emperical_fpr + sd, width = 0.02)) +
   ggtitle("Emperical FPR vs. Theoretical FPR") + xlab("False Positive Rate (FPR)") + ylab("Emperical FPR")
+
+## separating for different N's (shouldn't change much)
+q_time_vary_N <- data_summary(my_data, varname = "avg_query_time", groupnames = c("N", "query_type"))
+ggplot(q_time_vary_N, aes(x = N, y = avg_query_time, fill = query_type)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) + 
+  geom_errorbar(aes(ymin = avg_query_time - se, ymax = avg_query_time + se, width = 0.2), position = position_dodge(0.9)) + 
+  ggtitle("Average query time by N and query type") + 
+  xlab("N (num. of input keys)") + ylab("avg_query_time (sec)")
+
+## separating for different N's and fpr's (shouldn't change much)
+q_time_vary_N_fpr <- data_summary(my_data, varname = "avg_query_time", groupnames = c("N", "fpr"))
+q_time_vary_N_fpr$fpr <- factor(q_time_vary_N_fpr$fpr)
+ggplot(q_time_vary_N_fpr, aes(x = N, y = avg_query_time, fill = fpr)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9", "red", "green")) + 
+  geom_errorbar(aes(ymin = avg_query_time - se, ymax = avg_query_time + se, width = 0.2), position = position_dodge(0.9)) + 
+  ggtitle("Average query time by N and fpr") + 
+  xlab("N (num. of input keys)") + ylab("avg_query_time (sec)")
