@@ -29,9 +29,10 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -44,6 +45,7 @@
 \use_package undertilde 1
 \cite_engine basic
 \cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -55,6 +57,13 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\headheight 3cm
+\headsep 3cm
+\footskip 3cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -125,12 +134,12 @@ k=\frac{m}{n}\mathrm{ln}2
 \end_layout
 
 \begin_layout Standard
-I then implemented the functional script `bf.py build` to build bloom filters
+I then implemented the functional script `bf.py build` to build Bloom filters
  over N elements from randomly generated k-mers of length 100.
  Each nucleotide was sampled with uniform probability at each position in
  the k-mer.
- To build a bloom filter over 1 000 000 k-mers, that meant that I needed
- to define a bloom filter of size m = 
+ To build a Bloom filter over 1 000 000 100-mers, that meant that I needed
+ to define a Bloom filter of size m = 
 \series bold
 4792529 bits
 \series default
@@ -139,7 +148,7 @@ I then implemented the functional script `bf.py build` to build bloom filters
  ~ 3.32 (rounded to 4) hash functions.
  
 \series default
-To query the built bloom filter, I implemented the `bf.py query` function
+To query the built Bloom filter, I implemented the `bf.py query` function
  as instructed in the problem description.
 \end_layout
 
@@ -149,7 +158,7 @@ Most difficult Part
 
 \begin_layout Standard
 The part of this assignment that I found to be most difficult was in actually
- setting up the bloom filter data structure and constructor function.
+ setting up the Bloom filter data structure and constructor function.
  I initially started implementing it in C++, as I thought it would be easier
  to have control over the bitvector and the data members of the Bloom filter.
  Unfortunately, this turned out to be more challenging than I had thought;
@@ -170,9 +179,9 @@ To test my implementation of the Bloom filter (BF), I generated BFs with
  varying number of input 100-mers, Ns = {1 000, 10 000, 100 000, 1 000 000,
  10 000 000}, and a varying False Positive Rate (FPR), FPRs = {0.01, 0.05,
  0.10, 0.20, 0.25}.
- For each combination of N and FPR, I issued 3 sets of queries: one set
- had 100 100-mers fully contained in the BF, the second had 50 100-mers
- present in the BF and 50 not present, and the third had 0 100-mers present
+ For each combination of N and FPR, I issued three sets of queries: one
+ set had 100 100-mers fully contained in the BF, the second had 50 100-mers
+ present in the BF and 50 not present, and the third had zero 100-mers present
  in the BF and 100 not present.
  These correspond to the 
 \begin_inset Quotes eld
@@ -198,7 +207,7 @@ To test my implementation of the Bloom filter (BF), I generated BFs with
 \begin_inset Quotes erd
 \end_inset
 
- labels in figures 2 and 3 below.
+ labels in figures 2 and 3 below, respectively.
 \end_layout
 
 \begin_layout Standard
@@ -385,7 +394,11 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Average query time with varying N and across FPRs.
+
+\series bold
+Average query time with varying N and across FPRs
+\series default
+.
  The averaged values are across query types, and error bars are SE.
 \end_layout
 
@@ -421,12 +434,12 @@ Implementation
 \end_layout
 
 \begin_layout Standard
-The implementation for the Blocked Bloom Filter was fairly straight forward
+The implementation for the Blocked Bloom filter was fairly straight forward
  once I had the data structure for the regular Bloom filter in place.
- Instead of calculating a hash value for each hask function for a given
+ Instead of calculating a hash value for each hash function for a given
  kmer and then flipping those bits in the Bloom filter, I let the first
  hash value determine which block to flip all the rest of the bits for that
- kmer in.
+ kmer.
  
 \end_layout
 
@@ -437,7 +450,7 @@ Most difficult Part
 \begin_layout Standard
 The most difficult part of this task was just figuring out how to initially
  modify my existing Bloom filter to become a blocked one.
- Once I realized I can keep a similar bitvector (but extending it to fill
+ Once I realized I can keep a similar bit vector (but extending it to fill
  out the final block should it not match up to the requested block size)
  and just change the first hash value calculated to be the one that determines
  which block I should insert 1's into, the rest was easy.
@@ -449,7 +462,220 @@ Plots
 \end_layout
 
 \begin_layout Standard
-__
+All of the plots for this section were made in the same way as the previous
+ section, on regular Bloom filters.
+ The only difference here is that I used less query sets and FPRs to benchmark
+ the results.
+ I tested average query time and emperical vs.
+ theroetical FPR for N = {1000, 10 000, 100 000, 1 000 000} and FPR = {0.01,
+ 0.1, 0.2} and combinations therein.
+\end_layout
+
+\begin_layout Standard
+The difference in average query time between the 100pct query stream and
+ the 50pct query stream are nearly the same, and there is a significant
+ drop in time from the 50pct to the 0pct stream, as we saw with the regular
+ Bloom filter (Figure 5).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/blocked_avg_querytime_by_type.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\series bold
+Average query time by query type.
+ 
+\series default
+These query time averages are across all values of N and FPR.
+ Error bars are SE.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The measurments of the emperical FPR seemed to be close to the theoretical
+ values, though for the FPR 0.20 filter, the emperical FPR was a bit lower
+ than expected.
+ By increasing the query size and stratifying by query stream, it is likely
+ that the error bars would fall within the expected FPR or 0.20 (Figure 6).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/empFPR_vs_theoreticalFPR.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Measurment of emperical FPR vs.
+ theoretical FPR of all query streams (100pct, 50pct and 0pct) and N values.
+ The emperical FPR values at each point are averaged from varying N's and
+ query streams.
+ The error bars are Standard Error (SE).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The main consistency with average query time by N and query type is that
+ the 0pct stream has the lowest average query time across all values of
+ N.
+ This is to be expected for the same reasons as the regular Bloom filter
+ (Figure 7).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/blocked_avg_qtime_by_N_and_qtype.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\series bold
+Average query time with varying N and across query types
+\series default
+.
+ The averaged values are across FPR, and error bars are SE.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With a lower FPR, the average query time is consistently high accross all
+ values of N.
+ This makes sense since the algorithm for checking membership in the blocked
+ Bloom filter has to go through more iterations before it can return a 
+\begin_inset Quotes eld
+\end_inset
+
+Y
+\begin_inset Quotes erd
+\end_inset
+
+ or a 
+\begin_inset Quotes eld
+\end_inset
+
+N
+\begin_inset Quotes erd
+\end_inset
+
+ to the k-mer query.
+ As FPR increases, the query time decreases, on average (Figure 8).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/blocked_avg_qtime_byN_and_fpr.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\series bold
+Average query time with varying N and across FPRs
+\series default
+.
+ The averaged values are across query types, and error bars are SE.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
