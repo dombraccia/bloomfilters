@@ -126,7 +126,7 @@ k=\frac{m}{n}\mathrm{ln}2
 
 \begin_layout Standard
 I then implemented the functional script `bf.py build` to build bloom filters
- over $N$ elements from randomly generated k-mers of length 100.
+ over N elements from randomly generated k-mers of length 100.
  Each nucleotide was sampled with uniform probability at each position in
  the k-mer.
  To build a bloom filter over 1 000 000 k-mers, that meant that I needed
@@ -162,11 +162,254 @@ The part of this assignment that I found to be most difficult was in actually
 \end_layout
 
 \begin_layout Subsection*
-Plots
+Results
 \end_layout
 
 \begin_layout Standard
-[]
+To test my implementation of the Bloom filter (BF), I generated BFs with
+ varying number of input 100-mers, Ns = {1 000, 10 000, 100 000, 1 000 000,
+ 10 000 000}, and a varying False Positive Rate (FPR), FPRs = {0.01, 0.05,
+ 0.10, 0.20, 0.25}.
+ For each combination of N and FPR, I issued 3 sets of queries: one set
+ had 100 100-mers fully contained in the BF, the second had 50 100-mers
+ present in the BF and 50 not present, and the third had 0 100-mers present
+ in the BF and 100 not present.
+ These correspond to the 
+\begin_inset Quotes eld
+\end_inset
+
+100pct
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset Quotes eld
+\end_inset
+
+50pct
+\begin_inset Quotes erd
+\end_inset
+
+, and 
+\begin_inset Quotes eld
+\end_inset
+
+0pct
+\begin_inset Quotes erd
+\end_inset
+
+ labels in figures 2 and 3 below.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Note
+\series default
+: For each `by.py build` step, I specified the number of distinct keys in
+ the keyfile to be exactly N every time, without actually calcuating that
+ vale.
+ Since I randomly genererated nucleotides of 100-mers from a uniform distributio
+n, the maximum probability of randomly generating a repeat 100-mer was 
+\begin_inset Formula $Pr(repeat)\sum_{n}^{N}\frac{n}{4^{k}}$
+\end_inset
+
+, where k = 100 and N can vary from 1E+03 to 1E+07.
+ Even when generating 1E+07 100-mers, 
+\begin_inset Formula $Pr(repeat)\eqsim10^{-47}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/empericalFPR_VS_theoreticalFPR.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Measurment of emperical FPR vs.
+ theoretical FPR of all query streams (100pct, 50pct and 0pct) and N values.
+ The emperical FPR valeus at each point are averaged from varying N's and
+ query streams.
+ The error bars are Standard Error (SE).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 1 shows that the emperical FPR matches that of the theoretical FPR
+ from the BF build step.
+ All emperical FPRs besides 0.25 seemed to be very close to their theoretical
+ underpinning.
+ The SE bar on the point corresponding to a theoretical FPR of 0.25 does
+ not seem to cross over the expected value of 0.25 on the y-axis.
+ With more samples and measurments, this would likely return to a more reasonabl
+e value in the emperical ~0.25 range.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/query_time_by_query_type.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\series bold
+Average query time by query type.
+ 
+\series default
+These query time averages are across all values of N and FPR.
+ Error bars are SE.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In Figure 2, average query time across all three query streams (100pct,
+ 50pct and 0pct) are show.
+ There is a general decrease in the query time as percent present in the
+ BF decreases.
+ This is because the algorithm I implemented for checking membership of
+ a key in a BF breaks after the first hash value checked is not present
+ in the corresponding BF.
+ For queries that are present in the BF, each hash value from each independant
+ hash function must be calculated and checked in order to report membership.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/avg_query_time_by_N_qType.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Average query time with varying N and across query types.
+ The averaged values are across FPR, and error bars are SE.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There seems to be very little to no relationship between query time, query
+ type and N value, as evidenced by Figure 3.
+ The query time seemed to randomly spike for different query types at different
+ values of N, not following any particular trend.
+ For example, the query time for the 0pct type spikes for N = 10 000, but
+ then returns to moderately low values for increasing N.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/dome/Desktop/UMD/CMSC858D/Homework/HW2/figures/avg_q_time_by_N_FPR.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Average query time with varying N and across FPRs.
+ The averaged values are across query types, and error bars are SE.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Figure 4, much like Figure 3, seem to suggest that there is very little
+ interplay between query time, N, and FPR.
+ The query time, again, randomly spikes for different FPRs at different
+ values of N, not following one well defined pattern.
+ The spikes seem to be due to one or a few outliers, since the error bars
+ for those averages are quite large.
 \end_layout
 
 \begin_layout Section*
@@ -178,7 +421,13 @@ Implementation
 \end_layout
 
 \begin_layout Standard
-[]
+The implementation for the Blocked Bloom Filter was fairly straight forward
+ once I had the data structure for the regular Bloom filter in place.
+ Instead of calculating a hash value for each hask function for a given
+ kmer and then flipping those bits in the Bloom filter, I let the first
+ hash value determine which block to flip all the rest of the bits for that
+ kmer in.
+ 
 \end_layout
 
 \begin_layout Subsection*
@@ -186,7 +435,13 @@ Most difficult Part
 \end_layout
 
 \begin_layout Standard
-[]
+The most difficult part of this task was just figuring out how to initially
+ modify my existing Bloom filter to become a blocked one.
+ Once I realized I can keep a similar bitvector (but extending it to fill
+ out the final block should it not match up to the requested block size)
+ and just change the first hash value calculated to be the one that determines
+ which block I should insert 1's into, the rest was easy.
+ 
 \end_layout
 
 \begin_layout Subsection*
@@ -194,7 +449,7 @@ Plots
 \end_layout
 
 \begin_layout Standard
-[]
+__
 \end_layout
 
 \end_body

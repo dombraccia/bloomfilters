@@ -1,6 +1,9 @@
 # A SCTIPT FOR GENERATING HW 2 PLOTS
 
 library(tidyverse)
+library(plyr)
+
+################################## MAKING DATA TABLE FOR REGULAR BF #####
 
 # Initializing data.frame with first row of data from manual benchmarking
 N <- 1000
@@ -100,9 +103,66 @@ my_data$avg_query_time <-  as.numeric(my_data$avg_query_time)
 my_data$emperical_fpr <-  as.numeric(my_data$emperical_fpr)
 my_data$fpr <- as.numeric(my_data$fpr)
 
+################################## MAKING DATA TABLE FOR BLOCKED BF #####
+# Initializing data.frame with first row of data from manual benchmarking
+N <- 1000
+fpr <- 0.01
+query_type <- as.character("100pct")
+avg_query_time <- 2.8884410858154298e-05
+emperical_fpr <- NA
+my_data_blocked <- data.frame(N, fpr, query_type, avg_query_time, emperical_fpr)
+
+# Converting query_type column from factor to character
+i <- sapply(my_data_blocked, is.factor)
+my_data_blocked[i] <- lapply(my_data_blocked[i], as.character)
+class(my_data_blocked$query_type)
+
+# adding in the rest of the data from the manual benchmarking step
+my_data_blocked[2,] <- c(1000, 0.01, "50pct", 2.778291702270508e-05, 1/50)
+my_data_blocked[3,] <- c(1000, 0.01, "0pct", 1.919984817504883e-05, 2/100)
+my_data_blocked[4,] <- c(1000, 0.1, "100pct", 1.7490386962890625e-05, NA)
+my_data_blocked[5,] <- c(1000, 0.1, "50pct", 2.0210742950439452e-05, 2/50)
+my_data_blocked[6,] <- c(1000, 0.1, "0pct", 1.6140937805175782e-05, 5/100)
+my_data_blocked[7,] <- c(1000, 0.2, "100pct", 1.504659652709961e-05, NA)
+my_data_blocked[8,] <- c(1000, 0.2, "50pct", 1.676321029663086e-05, 9/50)
+my_data_blocked[9,] <- c(1000, 0.2, "0pct", 1.6384124755859375e-05, 15/100)
+my_data_blocked[10,] <- c(10000, 0.01, "100pct", 2.9616355895996093e-05, NA)
+my_data_blocked[11,] <- c(10000, 0.01, "50pct", 2.3522377014160155e-05, 0/50)
+my_data_blocked[12,] <- c(10000, 0.01, "0pct", 1.9330978393554687e-05, 1/100)
+my_data_blocked[13,] <- c(10000, 0.1, "100pct", 2.556324005126953e-05, NA)
+my_data_blocked[14,] <- c(10000, 0.1, "50pct", 1.9555091857910155e-05, 5/50)
+my_data_blocked[15,] <- c(10000, 0.1, "0pct", 2.2649765014648438e-05, 8/100)
+my_data_blocked[16,] <- c(10000, 0.2, "100pct", 1.7397403717041015e-05, NA)
+my_data_blocked[17,] <- c(10000, 0.2, "50pct", 1.3225078582763672e-05, 7/50)
+my_data_blocked[18,] <- c(10000, 0.2, "0pct", 1.5981197357177735e-05, 20/100)
+my_data_blocked[19,] <- c(100000, 0.01, "100pct", 2.8278827667236328e-05, NA)
+my_data_blocked[20,] <- c(100000, 0.01, "50pct", 2.2618770599365235e-05, 1/50)
+my_data_blocked[21,] <- c(100000, 0.01, "0pct", 2.1474361419677733e-05, 1/100)
+my_data_blocked[22,] <- c(100000, 0.1, "100pct", 1.9581317901611327e-05, NA)
+my_data_blocked[23,] <- c(100000, 0.1, "50pct", 3.81779670715332e-05, 3/50)
+my_data_blocked[24,] <- c(100000, 0.1, "0pct", 1.1525154113769532e-05, 9/100)
+my_data_blocked[25,] <- c(100000, 0.2, "100pct", 2.874135971069336e-05, NA)
+my_data_blocked[26,] <- c(100000, 0.2, "50pct", 2.066612243652344e-05, 8/50)
+my_data_blocked[27,] <- c(100000, 0.2, "0pct", 1.555919647216797e-05, 16/100)
+my_data_blocked[28,] <- c(1000000, 0.01, "100pct", 2.203226089477539e-05, NA)
+my_data_blocked[29,] <- c(1000000, 0.01, "50pct", 2.0973682403564453e-05, 0/50)
+my_data_blocked[30,] <- c(1000000, 0.01, "0pct", 1.5177726745605468e-05, 1/100)
+my_data_blocked[31,] <- c(1000000, 0.1, "100pct", 2.155780792236328e-05, NA)
+my_data_blocked[32,] <- c(1000000, 0.1, "50pct", 2.2029876708984376e-05, 6/50)
+my_data_blocked[33,] <- c(1000000, 0.1, "0pct", 1.3380050659179687e-05, 11/100)
+my_data_blocked[34,] <- c(1000000, 0.2, "100pct", 1.645803451538086e-05, NA)
+my_data_blocked[35,] <- c(1000000, 0.2, "50pct", 2.0339488983154297e-05, 8/50)
+my_data_blocked[36,] <- c(1000000, 0.2, "0pct", 1.1172294616699219e-05, 16/100)
+
+# Converting query_type column from char to numeric
+my_data_blocked$avg_query_time <-  as.numeric(my_data_blocked$avg_query_time)
+my_data_blocked$emperical_fpr <-  as.numeric(my_data_blocked$emperical_fpr)
+my_data_blocked$fpr <- as.numeric(my_data_blocked$fpr)
+
+
 # ====================================================================== #
 
-# MAKING PLOTS
+########################### MAKING PLOTS for REGULAR BF ##################
 
 ## average query time plot for 3 different streams:
 data_summary <- function(data, varname, groupnames){
@@ -148,6 +208,46 @@ ggplot(q_time_vary_N, aes(x = N, y = avg_query_time, fill = query_type)) +
 
 ## separating for different N's and fpr's (shouldn't change much)
 q_time_vary_N_fpr <- data_summary(my_data, varname = "avg_query_time", groupnames = c("N", "fpr"))
+q_time_vary_N_fpr$fpr <- factor(q_time_vary_N_fpr$fpr)
+ggplot(q_time_vary_N_fpr, aes(x = N, y = avg_query_time, fill = fpr)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9", "red", "green")) + 
+  geom_errorbar(aes(ymin = avg_query_time - se, ymax = avg_query_time + se, width = 0.2), position = position_dodge(0.9)) + 
+  ggtitle("Average query time by N and fpr") + 
+  xlab("N (num. of input keys)") + ylab("avg_query_time (sec)")
+
+########################### MAKING PLOTS for BLOCKED BF ############
+# summarizing data for plotting
+avg_query_time_summary <- data_summary(my_data_blocked, varname = "avg_query_time", groupnames = "query_type")
+
+# changing query_type to factor and releveling
+avg_query_time_summary$query_type <- factor(avg_query_time_summary$query_type, levels = c("100pct", "50pct", "0pct"))
+ggplot(avg_query_time_summary, aes(x = query_type, y = avg_query_time)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = avg_query_time - se, ymax = avg_query_time + se, width = 0.2)) + 
+  ggtitle("Average query time by type") + ylab("avg_query_time (sec)") 
+
+## emperical fpr plot by theoretical fpr
+
+# summarizing data for plotting
+emp_fdr_summary <- data_summary(my_data_blocked, "emperical_fpr", "fpr")
+ggplot(emp_fdr_summary, aes(x = fpr, y = emperical_fpr, group = 1)) + 
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = emperical_fpr - sd, ymax = emperical_fpr + sd, width = 0.02)) +
+  ggtitle("Emperical FPR vs. Theoretical FPR") + xlab("False Positive Rate (FPR)") + ylab("Emperical FPR")
+
+## separating for different N's (shouldn't change much)
+q_time_vary_N <- data_summary(my_data_blocked, varname = "avg_query_time", groupnames = c("N", "query_type"))
+ggplot(q_time_vary_N, aes(x = N, y = avg_query_time, fill = query_type)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) + 
+  geom_errorbar(aes(ymin = avg_query_time - se, ymax = avg_query_time + se, width = 0.2), position = position_dodge(0.9)) + 
+  ggtitle("Average query time by N and query type") + 
+  xlab("N (num. of input keys)") + ylab("avg_query_time (sec)")
+
+## separating for different N's and fpr's (shouldn't change much)
+q_time_vary_N_fpr <- data_summary(my_data_blocked, varname = "avg_query_time", groupnames = c("N", "fpr"))
 q_time_vary_N_fpr$fpr <- factor(q_time_vary_N_fpr$fpr)
 ggplot(q_time_vary_N_fpr, aes(x = N, y = avg_query_time, fill = fpr)) +
   geom_bar(stat="identity", position=position_dodge()) +
