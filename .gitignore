@@ -5,3 +5,4 @@
 data/*
 sdsl-lite/*
 .Rproj*
+.Rproj.user
